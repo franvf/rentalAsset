@@ -9,7 +9,7 @@ This projects shows a proof of concept (POC) of a blockchain rental contract. Th
 using. To do this, we can simply open the terminal, go to the directory project and write the command `npm i`. Now all the required packages 
 will be installed. 
 
-**Note**: Probably you will have to modity the version of DateTime.sol contract. This contract is using an older version of solidity but in our project we are using a new one. In order to fix this, you must go to node_modules/ethereum-datetime/contracts/DateTime.sol and modify the current version to ^0.8.18 version. This will provoke an error at line 61 where you will have to select the storage of the returned variable (storage, calldata or memory)
+**Note**: You will probably have to modify the version of the DateTime.sol contract. This contract uses an older version of solidity, but we are using a new one in our project. In order to fix this, you must go to node_modules/ethereum-datetime/contracts/DateTime.sol and modify the current version to the ^0.8.18 version. This will provoke an error at line 61, where you will have to select the storage of the returned variable (storage, calldata, or memory)
 
 3. Install Ganache and Truffle: If you don't have this software installed yet, it is time to install it. You can download the Ganache GUI installer from [here](https://trufflesuite.com/ganache/). And to install Truffle, you can follow [this](https://trufflesuite.com/docs/truffle/how-to/install/) guide.
 

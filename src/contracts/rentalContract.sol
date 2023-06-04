@@ -75,7 +75,7 @@ contract rentalContract is ERC721, Ownable, DateTime{
         emit assetBought(msg.sender, tokenId);
     }
 
-    function payEntryFee(address tokenOwner, uint256 price) private {
+    function pay(address tokenOwner, uint256 price) private {
         (bool success, ) = payable(tokenOwner).call{value: price}(""); //Pay to tokenOwner
         require(success, "Entry fee payment failed");
     }
@@ -92,7 +92,7 @@ contract rentalContract is ERC721, Ownable, DateTime{
         
         lastTokenPayment[tokenId] = block.timestamp; 
         tokenPayments[tokenId][date] = monthlyPrice; 
-        payEntryFee(tokenOwner, msg.value);
+        pay(tokenOwner, msg.value);
 
         emit monthlyPay(msg.sender, tokenId); 
     }
@@ -112,7 +112,7 @@ contract rentalContract is ERC721, Ownable, DateTime{
 
         address tokenOwner = ownerOf(tokenId);
 
-        payEntryFee(tokenOwner, msg.value);
+        pay(tokenOwner, msg.value);
 
         tokenCharges[tokenId][date] = 0; //Delete the fee
         tokenPayments[tokenId][date] = monthlyPrice; //Register the payment

@@ -88,18 +88,17 @@ contract rentalContract is ERC721, Ownable, DateTime{
         uint256 monthlyPrice = tokenMonthlyPrice[tokenId];
         require(msg.value == monthlyPrice, "Payment not correct");
 
-        address seller = ownerOf(tokenId);
+        address tokenOwner = ownerOf(tokenId);
         
         lastTokenPayment[tokenId] = block.timestamp; 
         tokenPayments[tokenId][date] = monthlyPrice; 
-        (bool success, ) = payable(seller).call{value: msg.value}(""); //Pay to the seller
-        require(success, "Monthly payment failed");
+        payEntryFee(tokenOwner, msg.value);
 
         emit monthlyPay(msg.sender, tokenId); 
     }
 
     //Pay previous charges
-    // @audit-ok -> not follows checks, effects, interactions pattern but a mutex is used
+    // @audit-ok -> The function doesn't follows checks, effects, interactions pattern but a mutex is used
     function payCharge(uint256 tokenId, uint16 year, uint8 month) public payable onlyTenant(tokenId) mutex {
 
         bytes32 date = keccak256(abi.encodePacked(year, month)); //Date hash
@@ -111,10 +110,9 @@ contract rentalContract is ERC721, Ownable, DateTime{
         
         require(msg.value == monthlyPrice, "Payment must be the monthly price");
 
-        address seller = ownerOf(tokenId);
+        address tokenOwner = ownerOf(tokenId);
 
-        (bool success, ) = payable(seller).call{value: msg.value}(""); //Pay to the seller
-        require(success, "Charge payment failed");
+        payEntryFee(tokenOwner, msg.value);
 
         tokenCharges[tokenId][date] = 0; //Delete the fee
         tokenPayments[tokenId][date] = monthlyPrice; //Register the payment
@@ -123,6 +121,7 @@ contract rentalContract is ERC721, Ownable, DateTime{
 
     }
 
+    //Token's owner can add a charge to a month
     function addCharge(uint256 tokenId, uint256 amount, uint16 year, uint8 month) external onlyOwner { 
 
         bytes32 date = keccak256(abi.encodePacked(year, month)); //Month and year hash
